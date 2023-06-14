@@ -27,6 +27,8 @@ public class Modelo{
     private Map<String, Integer> numPersonaEnHabit = new HashMap<>();
     private Map<LocalDate, Float> ingresosCamAdd = new HashMap<>();
     private Map<LocalDate, Float> ingresosCaja = new HashMap<>();
+    private Map<LocalDate[], String> porcentajeDiaria = new HashMap<>();
+    private Map<LocalDate[], String> promedioDiaria = new HashMap<>();
 
     public void inicializacion() throws IOException {
         BufferedReader fin = null;
@@ -328,6 +330,14 @@ public class Modelo{
         presupuesto += ganancia;
         ingresos.put("Restaurant", ganancia);
         contabilidad.put(fecha, " |      " + ganancia + "|        |" + presupuesto + "|Restaurant");
+    }
+    public void porcentajeDiaria(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        for(LocalDate[] time : habitacionesEnFecha.keySet()){
+            
+        }
     }
     public List<int[]> getHabitacion(String tipo){
         List<int[]> habitacionesList = new ArrayList<>();
