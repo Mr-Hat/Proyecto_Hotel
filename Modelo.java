@@ -347,7 +347,10 @@ public class Modelo{
         LocalDate iteracionFecha = fechaInicio;
         for(int i = 0; i<diff;i++){
             for(LocalDate[] time : lista){
-                
+                if((time[0].isEqual(iteracionFecha) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(iteracionFecha) || time[1].isBefore(iteracionFecha))){
+                    
+                }
+    
             }
         }
     }
