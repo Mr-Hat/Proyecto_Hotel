@@ -1,5 +1,5 @@
 import java.time.LocalDate; import java.time.LocalTime;
-import java.time.Period;
+import java.time.Period; import java.time.temporal.ChronoUnit;
 import java.time.LocalDateTime;
 import java.io.IOException; import java.io.BufferedReader;
 import java.io.FileReader; import java.util.*;
@@ -29,7 +29,7 @@ public class Modelo{
     private Map<LocalDate, Float> ingresosCaja = new HashMap<>();
     private Map<LocalDate[], String> porcentajeDiaria = new HashMap<>();
     private Map<LocalDate[], String> promedioDiaria = new HashMap<>();
-
+    
     public void inicializacion() throws IOException {
         BufferedReader fin = null;
         numPersonaEnHabit.put("INDIV", 1);
@@ -333,17 +333,28 @@ public class Modelo{
     }
     public void porcentajeDiaria(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
+        List<LocalDate[]> lista = new ArrayList<>();
         fechas[0] = fechaInicio;
         fechas[1] = fechaFin;
+        long diff = ChronoUnit.DAYS.between(fechaInicio, fechaFin);
+        int count = 0;
+        int habi = 0;
         for(LocalDate[] time : habitacionesEnFecha.keySet()){
-            
+            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaFin) || time[1].isBefore(fechaFin))){
+                lista.add(time);
+            }
+        }
+        LocalDate iteracionFecha = fechaInicio;
+        for(int i = 0; i<diff;i++){
+            for(LocalDate[] time : lista){
+                
+            }
         }
     }
     public List<int[]> getHabitacion(String tipo){
         List<int[]> habitacionesList = new ArrayList<>();
         for(int[] key : numHabit.keySet()){
             if(numHabit.get(key).equals(tipo)){
-                
                 habitacionesList.add(key);
             }
         }
