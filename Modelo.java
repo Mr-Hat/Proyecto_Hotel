@@ -23,14 +23,15 @@ public class Modelo{
     private Map<LocalDate, String> contabilidad = new HashMap<>();
     private Map<String, Float> ingresos = new HashMap<>();
     private Map<String, Float> gastoUsuario = new HashMap<>();
-    private Map<LocalDate[], String> reportes = new HashMap<>();
+    private Map<LocalDate[], ArrayList<String>> reportes = new HashMap<>();
     private Map<String, Integer> numPersonaEnHabit = new HashMap<>();
     private Map<LocalDate, Float> ingresosCamAdd = new HashMap<>();
     private Map<LocalDate, Float> ingresosCaja = new HashMap<>();
     private Map<LocalDate[], ArrayList<Float>> porcentajeDiaria = new HashMap<>();
     private Map<LocalDate[], Float> promedioDiaria = new HashMap<>();
-    private Map<LocalDate, ArrayList<Integer>> habitacionesEnUnDIa = new HashMap<>();
-    
+    private Map<LocalDate, Integer> habitacionesLibresEnUnDia = new HashMap<>();
+    private Map<LocalDate, Integer> habitacionesReservadasEnUnDia = new HashMap<>();
+    private Map<LocalDate, Integer> habitacionesOcupadasEnUnDia = new HashMap<>();
     public void inicializacion() throws IOException {
         BufferedReader fin = null;
         numPersonaEnHabit.put("INDIV", 1);
@@ -249,7 +250,12 @@ public class Modelo{
                 count++;
             }
         }
-        reportes.put(fechas, "Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones canceladas");
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones canceladas");
+        } else{
+           reportes.put(fechas, new ArrayList<String>());
+           reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones canceladas");
+        }
     }
     public void ocupacionDiaria(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -267,7 +273,14 @@ public class Modelo{
                 count++;
             }
         }
-        reportes.put(fechas, "Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones efectivas");
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones efectivas");
+        } else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones efectivas");
+
+        }
+        
     }
     public void personasAtendidas(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -285,7 +298,12 @@ public class Modelo{
                 countA ++;
             }
         }
-        reportes.put(fechas, "Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + countA + " Adultos atendidos\n\t\t\t\t\t" + countN + " Ninos atendidos");
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + countA + " Adultos atendidos\n\t\t\t\t\t" + countN + " Ninos atendidos");
+        } else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + countA + " Adultos atendidos\n\t\t\t\t\t" + countN + " Ninos atendidos");
+        }
     }
     public void ingresosCamasAdicionales(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -297,7 +315,13 @@ public class Modelo{
                 ganancia += ingresosCamAdd.get(time);
             }
         }
-        reportes.put(fechas, "Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por camas adicionales");
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por camas adicionales");
+        } else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por camas adicionales");
+
+        }
     }
     public void ingresosCajas(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -309,7 +333,13 @@ public class Modelo{
                 ganancia += ingresosCaja.get(time);
             }
         }
-        reportes.put(fechas, "Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por uso de caja fuerte");
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por uso de caja fuerte");
+        } else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por uso de caja fuerte");
+
+        }
     }
     public void solicitarServicio(String cedula, int num, String[] pedido, LocalDate fecha){
         float gananciaCama = 0;
@@ -387,7 +417,12 @@ public class Modelo{
             porcentaje = porcentaje + "\n\t\t\t\t" + porcenDia + "%\tDia " +diaString;
             porcentajeDiaria.get(fechas).add(porcenDia);
         }
-        reportes.put(fechas, porcentaje);
+        if(reportes.containsKey(fechas)){
+            reportes.get(fechas).add(porcentaje);
+        }else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add(porcentaje);
+        }
     }
     public void promedioDiara(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -405,11 +440,56 @@ public class Modelo{
                 suma = suma/count;
                 promedioDiaria.put(fechas, suma);
                 String reporte = "Del " + fechaInicio + " al " + fechaFin + " " + suma + "%\tPromedio de % de ocupacion diaria";
-                reportes.put(fechas, reporte);
+                if(reportes.containsKey(fechas)){
+                    reportes.get(fechas).add(reporte);
+                }else{
+                    reportes.put(fechas, new ArrayList<String>());
+                    reportes.get(fechas).add(reporte);
+                }
+                break;
             }
         }
     }
-    
+    public void habitaciones(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        for(LocalDate[] time : habitacionesEnFecha.keySet()){
+            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaInicio) || time[1].isBefore(fechaInicio))){
+                ArrayList<int[]> lista = habitacionesEnFecha.get(time);
+                int reservadas = lista.size();
+                habitacionesReservadasEnUnDia.put(fechaInicio, reservadas);
+                String reservadasOut = "Al " + fechaInicio.toString() + "\t\t\t" + reservadas + "%\t\tHabitaciones reservadas"; 
+                int libres = reservadas - habitaciones;
+                String libresOut = "Al " + fechaInicio.toString() + "\t\t\t" + libres + "%\t\tHabitaciones libres"; 
+                habitacionesLibresEnUnDia.put(fechaInicio, libres);
+                if(reportes.containsKey(fechas)){
+                    reportes.get(fechas).add(reservadasOut);
+                    reportes.get(fechas).add(libresOut);
+                } else{
+                    reportes.put(fechas, new ArrayList<String>());
+                    reportes.get(fechas).add(reservadasOut);
+                    reportes.get(fechas).add(libresOut);
+                }
+                break;
+            }
+        }
+        for(LocalDateTime time : checkIns.keySet()){
+            LocalDate tiempo = time.toLocalDate();
+            if(tiempo.isEqual(fechaInicio)){
+                ArrayList<String> ocupadas = checkIns.get(time);
+                int numOcupadas = ocupadas.size();
+                habitacionesOcupadasEnUnDia.put(tiempo, numOcupadas);
+                String ocupadasOut = "Al " + fechaInicio.toString() + "\t\t\t" + numOcupadas + "\t\tHabitacioens ocupadas";
+                if(reportes.containsKey(fechas)){
+                    reportes.get(fechas).add(ocupadasOut);
+                } else{
+                    reportes.put(fechas, new ArrayList<String>());
+                    reportes.get(fechas).add(ocupadasOut);
+                }
+            }
+        }
+    }
     public List<int[]> getHabitacion(String tipo){
         List<int[]> habitacionesList = new ArrayList<>();
         for(int[] key : numHabit.keySet()){
