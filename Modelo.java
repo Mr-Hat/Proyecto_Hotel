@@ -8,28 +8,28 @@ public class Modelo{
     private LocalDate fecha;
     private int habitaciones;
     private int pisos;
-    private Map<LocalDate, ArrayList<Integer>> transferencias = new HashMap<LocalDate, ArrayList<Integer>>();
-    private Map<String, Float> precios = new HashMap<String, Float>();
-    private Map<String, String> nombres = new HashMap<String, String>();
-    private Map<int[], String> numHabit = new HashMap<int[], String>();  
-    private Map<LocalDate[], ArrayList<int[]>> habitacionesEnFecha = new HashMap<LocalDate[], ArrayList<int[]>>();
-    private Map<String, int[]> reservas = new HashMap<String, int[]>();
-    private Map<LocalDate[], ArrayList<Integer>> ninosEnPeriodo = new HashMap<LocalDate[], ArrayList<Integer>>();
-    private Map<LocalDate[], ArrayList<Integer>> adultosEnPeriodo = new HashMap<LocalDate[], ArrayList<Integer>>();
-    private Map<LocalDateTime, ArrayList<String>> cancelaciones = new HashMap<LocalDateTime, ArrayList<String>>();
-    private Map<LocalDateTime, ArrayList<String>> checkIns = new HashMap<LocalDateTime, ArrayList<String>>(); 
-    private Map<LocalDate, ArrayList<String>> reservacion = new HashMap<LocalDate, ArrayList<String>>();
-    private Map<LocalDateTime, ArrayList<String>> checkOuts = new HashMap<LocalDateTime, ArrayList<String>>();
-    private Map<LocalDate, String> contabilidad = new HashMap<LocalDate, String>();
-    private Map<String, Float> ingresos = new HashMap<String, Float>();
-    private Map<String, Float> gastoUsuario = new HashMap<String, Float>();
-    private Map<LocalDate[], String> reportes = new HashMap<LocalDate[], String>();
-    private Map<String, Integer> numPersonaEnHabit = new HashMap<String, Integer>();
-    private Map<LocalDate, Float> ingresosCamAdd = new HashMap<LocalDate, Float>();
-    private Map<LocalDate, Float> ingresosCaja = new HashMap<LocalDate, Float>();
-    private Map<LocalDate[], ArrayList<String>> porcentajeDiaria = new HashMap<LocalDate[], ArrayList<String>>();
-    private Map<LocalDate[], String> promedioDiaria = new HashMap<LocalDate[], String>();
-    private Map<LocalDate, ArrayList<Integer>> habitacionesEnUnDIa = new HashMap<LocalDate, ArrayList<Integer>>();
+    private Map<LocalDate, ArrayList<Integer>> transferencias = new HashMap<>();
+    private Map<String, Float> precios = new HashMap<>();
+    private Map<String, String> nombres = new HashMap<>();
+    private Map<int[], String> numHabit = new HashMap<>();  
+    private Map<LocalDate[], ArrayList<int[]>> habitacionesEnFecha = new HashMap<>();
+    private Map<String, int[]> reservas = new HashMap<>();
+    private Map<LocalDate[], Integer> ninosEnPeriodo = new HashMap<>();
+    private Map<LocalDate[], Integer> adultosEnPeriodo = new HashMap<>();
+    private Map<LocalDateTime, ArrayList<String>> cancelaciones = new HashMap<>();
+    private Map<LocalDateTime, ArrayList<String>> checkIns = new HashMap<>(); 
+    private Map<LocalDate, ArrayList<String>> reservacion = new HashMap<>();
+    private Map<LocalDateTime, ArrayList<String>> checkOuts = new HashMap<>();
+    private Map<LocalDate, String> contabilidad = new HashMap<>();
+    private Map<String, Float> ingresos = new HashMap<>();
+    private Map<String, Float> gastoUsuario = new HashMap<>();
+    private Map<LocalDate[], String> reportes = new HashMap<>();
+    private Map<String, Integer> numPersonaEnHabit = new HashMap<>();
+    private Map<LocalDate, Float> ingresosCamAdd = new HashMap<>();
+    private Map<LocalDate, Float> ingresosCaja = new HashMap<>();
+    private Map<LocalDate[], ArrayList<String>> porcentajeDiaria = new HashMap<>();
+    private Map<LocalDate[], String> promedioDiaria = new HashMap<>();
+    private Map<LocalDate, ArrayList<Integer>> habitacionesEnUnDIa = new HashMap<>();
     
     public void inicializacion() throws IOException {
         BufferedReader fin = null;
@@ -168,7 +168,6 @@ public class Modelo{
                     String[] titularSplit = titular.split(" ", 3);
                     String cedula = titularSplit[1];
                     reservas.put(cedula, habit);
-                    adultosEnPeriodo.put(fechas, new ArrayList<Integer>());
                     Period dif = Period.between(fechLleg, fechSalid);
                     reservacion.put(fecha, new ArrayList<String>());
                     reservacion.get(fecha).add("Titular: " + cedula);
@@ -176,9 +175,13 @@ public class Modelo{
                     for(int i = 1; i<=num; i++){
                         String[] infoRes = personas[i].split(" ", 3);
                         if(infoRes[0].equals("A")){
-                            adultosEnPeriodo.get(fechas).add(1);
+                            int temp1 = adultosEnPeriodo.get(fechas);
+                            temp1++;
+                            adultosEnPeriodo.put(fechas, temp1);
                         } else if (infoRes[0].equals("N")){
-                            ninosEnPeriodo.get(fechas).add(1);
+                            int temp = ninosEnPeriodo.get(fechas);
+                            temp++;
+                            ninosEnPeriodo.put(fechas, temp);
                         }
                     }
                 }
@@ -345,6 +348,7 @@ public class Modelo{
     public void porcentajeDiaria(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
         List<LocalDate[]> lista = new ArrayList<>();
+        int diasEntre = (int) ChronoUnit.DAYS.between(fechaInicio, fechaFin);
         fechas[0] = fechaInicio;
         fechas[1] = fechaFin;
         int habi = 0;
@@ -354,16 +358,20 @@ public class Modelo{
             }
         }
         LocalDate iteracionFecha = fechaInicio;
-        for(LocalDate[] time : lista){
-            int count = 0;
-            LocalDate fechaTemp = time[0];
-            long diff = ChronoUnit.DAYS.between(time[0], time[1]);
-            for(int i = 0; i<diff; i++){
-                if(fechaTemp.isEqual(iteracionFecha)){
-                    fechaTemp.plusDays(1);
-
+        int[] counts = new int[diasEntre];
+        for(int j = 0; j<diasEntre; j++){
+            for(LocalDate[] time : lista){
+                LocalDate fechaTemp = time[0];
+                long diff = ChronoUnit.DAYS.between(time[0], time[1]);
+                for(int i = 0; i<diff; i++){
+                    if(fechaTemp.isEqual(iteracionFecha)){
+                        fechaTemp.plusDays(1);
+                        ArrayList<int[]> valor = habitacionesEnFecha.get(time);
+                        count += valor.size();
+                    }
                 }
             }
+        iteracionFecha.plusDays(1);
         }
     }
     public List<int[]> getHabitacion(String tipo){
