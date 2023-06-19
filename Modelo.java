@@ -27,8 +27,8 @@ public class Modelo{
     private Map<String, Integer> numPersonaEnHabit = new HashMap<>();
     private Map<LocalDate, Float> ingresosCamAdd = new HashMap<>();
     private Map<LocalDate, Float> ingresosCaja = new HashMap<>();
-    private Map<LocalDate[], ArrayList<String>> porcentajeDiaria = new HashMap<>();
-    private Map<LocalDate[], String> promedioDiaria = new HashMap<>();
+    private Map<LocalDate[], ArrayList<Float>> porcentajeDiaria = new HashMap<>();
+    private Map<LocalDate[], Float> promedioDiaria = new HashMap<>();
     private Map<LocalDate, ArrayList<Integer>> habitacionesEnUnDIa = new HashMap<>();
     
     public void inicializacion() throws IOException {
@@ -351,7 +351,6 @@ public class Modelo{
         int diasEntre = (int) ChronoUnit.DAYS.between(fechaInicio, fechaFin);
         fechas[0] = fechaInicio;
         fechas[1] = fechaFin;
-        int habi = 0;
         for(LocalDate[] time : habitacionesEnFecha.keySet()){
             if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaFin) || time[1].isBefore(fechaFin))){
                 lista.add(time);
@@ -360,9 +359,10 @@ public class Modelo{
         LocalDate iteracionFecha = fechaInicio;
         int[] counts = new int[diasEntre];
         for(int j = 0; j<diasEntre; j++){
+            int count = 0;
             for(LocalDate[] time : lista){
                 LocalDate fechaTemp = time[0];
-                long diff = ChronoUnit.DAYS.between(time[0], time[1]);
+                int diff = (int) ChronoUnit.DAYS.between(time[0], time[1]);
                 for(int i = 0; i<diff; i++){
                     if(fechaTemp.isEqual(iteracionFecha)){
                         fechaTemp.plusDays(1);
@@ -371,9 +371,45 @@ public class Modelo{
                     }
                 }
             }
+        counts[j] = count;
         iteracionFecha.plusDays(1);
         }
+        int suma = 0;
+        for(int i = 0; i<diasEntre; i++){
+            suma += counts[i];
+        }
+        String porcentaje = "Del " + fechaInicio.toString() + " al " + fechaFin.toString() + "\t\t% de ocupación diaria";
+        porcentajeDiaria.put(fechas, new ArrayList<Float>());
+        for(int i = 0; i<diasEntre; i++){
+            float porcenDia = counts[i];
+            porcenDia = porcenDia *100/suma;
+            int diaString = i +1;
+            porcentaje = porcentaje + "\n\t\t\t\t" + porcenDia + "%\tDia " +diaString;
+            porcentajeDiaria.get(fechas).add(porcenDia);
+        }
+        reportes.put(fechas, porcentaje);
     }
+    public void promedioDiara(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        int count = 0;
+        for(LocalDate[] time : porcentajeDiaria.keySet()){
+            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaFin) || time[1].isBefore(fechaFin))){
+                ArrayList<Float> valor = porcentajeDiaria.get(time);
+                count = valor.size();
+                float suma = 0;
+                for(Float i : valor){
+                    suma += i;
+                }
+                suma = suma/count;
+                promedioDiaria.put(fechas, suma);
+                String reporte = "Del " + fechaInicio + " al " + fechaFin + " " + suma + "%\tPromedio de % de ocupacion diaria";
+                reportes.put(fechas, reporte);
+            }
+        }
+    }
+    
     public List<int[]> getHabitacion(String tipo){
         List<int[]> habitacionesList = new ArrayList<>();
         for(int[] key : numHabit.keySet()){
