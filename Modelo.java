@@ -1,13 +1,17 @@
 import java.time.LocalDate; import java.time.LocalTime;
 import java.time.Period; import java.time.temporal.ChronoUnit;
-import java.time.LocalDateTime;
-import java.io.IOException; import java.io.BufferedReader;
-import java.io.FileReader; import java.util.*;
+import java.time.LocalDateTime; import java.io.IOException;
+import java.io.PrintWriter; import java.io.BufferedReader;
+import java.io.BufferedWriter; import java.io.FileReader;
+import java.io.FileWriter; import java.io.File;
+import java.util.*;
 public class Modelo{
     private float presupuesto;
     private LocalDate fecha;
     private int habitaciones;
     private int pisos;
+    private String contabilidadString = "";
+    private String reservacionesString = "";
     private Map<LocalDate, ArrayList<Integer>> transferencias = new HashMap<>();
     private Map<String, Float> precios = new HashMap<>();
     private Map<String, String> nombres = new HashMap<>();
@@ -20,6 +24,7 @@ public class Modelo{
     private Map<LocalDateTime, ArrayList<String>> checkIns = new HashMap<>(); 
     private Map<LocalDate, ArrayList<String>> reservacion = new HashMap<>();
     private Map<LocalDateTime, ArrayList<String>> checkOuts = new HashMap<>();
+    private Map<LocalDate[], Integer> pisoMasUsado = new HashMap<>();
     private Map<LocalDate, String> contabilidad = new HashMap<>();
     private Map<String, Float> ingresos = new HashMap<>();
     private Map<String, Float> gastoUsuario = new HashMap<>();
@@ -120,7 +125,7 @@ public class Modelo{
             contabilidad.put(fecha, fecha + " |" + "         |   " + 25000+ "|       " + presupuesto + "|Nomina");
         } 
     }
-    public void reserva(LocalDate fechLleg, LocalDate fechSalid, String tipo, int num, String[] personas){
+    public void reserva(LocalDate fechLleg, LocalDate fechSalid, String tipo, int num, int numA, int numN, String cedula, String nombre){
             if(num >= 1 || num <= 10){
                 List<int[]> totalHabit = getHabitacion(tipo);
                 int[] habit = buscarHabitacionDisponible(totalHabit, fechLleg, fechSalid);
@@ -165,25 +170,24 @@ public class Modelo{
                     System.out.println("No se ha podido ejecutar la reserva");
                 }
                 else{
-                    String titular = personas[0];
-                    String[] titularSplit = titular.split(" ", 3);
-                    String cedula = titularSplit[1];
                     reservas.put(cedula, habit);
                     Period dif = Period.between(fechLleg, fechSalid);
                     reservacion.put(fecha, new ArrayList<String>());
                     reservacion.get(fecha).add("Titular: " + cedula);
                     reservacion.get(fecha).add("Habitacion " + tipo + "del" + fechLleg + "Al" + fechSalid + "(" + dif.toString() + " dias)");
-                    for(int i = 1; i<=num; i++){
-                        String[] infoRes = personas[i].split(" ", 3);
-                        if(infoRes[0].equals("A")){
-                            int temp1 = adultosEnPeriodo.get(fechas);
-                            temp1++;
-                            adultosEnPeriodo.put(fechas, temp1);
-                        } else if (infoRes[0].equals("N")){
-                            int temp = ninosEnPeriodo.get(fechas);
-                            temp++;
-                            ninosEnPeriodo.put(fechas, temp);
-                        }
+                    if(ninosEnPeriodo.containsKey(fechas)){
+                       int ninos = ninosEnPeriodo.get(fechas); 
+                       ninos += numN;
+                        ninosEnPeriodo.put(fechas, ninos);
+                    }else{
+                        ninosEnPeriodo.put(fechas, numN);
+                    }
+                    if(adultosEnPeriodo.containsKey(fechas)){
+                       int adultos = adultosEnPeriodo.get(fechas); 
+                       adultos += numA;
+                        adultosEnPeriodo.put(fechas, adultos);
+                    }else{
+                        adultosEnPeriodo.put(fechas, numA);
                     }
                 }
             }
@@ -238,8 +242,9 @@ public class Modelo{
         LocalDateTime time = LocalDateTime.of(fecha, hora);
         checkOuts.put(time, new ArrayList<String>());
         checkOuts.get(time).add("Titular: " + cedula);
-
-    }
+        String a = gastoUsuario.get(cedula) + " Bs.F.";
+        checkOuts.get(time).add("Gasto: " + a);
+    }   
     public void reservasCanceladas(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
         fechas[0] = fechaInicio;
@@ -256,12 +261,6 @@ public class Modelo{
            reportes.put(fechas, new ArrayList<String>());
            reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + count + "\t\tReservaciones canceladas");
         }
-    }
-    public void ocupacionDiaria(LocalDate fechaInicio, LocalDate fechaFin){
-        LocalDate[] fechas = new LocalDate[2];
-        fechas[0] = fechaInicio;
-        fechas[1] = fechaFin;
-
     }
     public void reservasEfectivas(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
@@ -340,6 +339,33 @@ public class Modelo{
             reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + ganancia + "\t\tIngresos por uso de caja fuerte");
 
         }
+    }
+    public void pisoMasUso(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        int[] pisoMasUso = new int[pisos];
+        for(LocalDate[] time : habitacionesEnFecha.keySet()){
+            if((time[0].isAfter(fechaInicio) || time[0].isEqual(fechaInicio) && (time[1].isBefore(fechaFin) || time[1].isEqual(fechaFin)))){
+                for(int[] habi : habitacionesEnFecha.get(time)){
+                    pisoMasUso[habi[0]] += habi[1];
+                }
+            }
+        }
+        int uso = 0;
+        for(int piso : pisoMasUso){
+            if(piso <= uso){
+                uso = piso;
+            }
+        }
+        int count = 0;
+        for(int piso : pisoMasUso){
+            if(piso == uso){
+                break;
+            }
+            count++;
+        }
+        pisoMasUsado.put(fechas, count);
     }
     public void solicitarServicio(String cedula, int num, String[] pedido, LocalDate fecha){
         float gananciaCama = 0;
@@ -520,5 +546,82 @@ public class Modelo{
         String piso = String.format("%03d", num[0]);
         String habit = String.format("%03d", num[1]);
         return piso + habit;
+    }
+    public String getReservacionesOut(){
+        return reservacionesString;
+    }
+    public String getContabilidadString(){
+        return contabilidadString;
+    }
+    public String getReporte(){
+        String reporte = "";
+        for(LocalDate[] time : reportes.keySet()){
+            for(String a : reportes.get(time)){
+                reporte = reporte + "\n" + a;
+            }
+        }
+        return reporte;
+    }
+    public void reservacionesOutCreate(){
+        try{
+            File reserva = new File("Reservaciones.out");
+            if(reserva.createNewFile()){
+                System.out.println("Se ha creado el archivo Reservaciones.out");
+            } else{
+                System.out.println("El archivo Reservaciones.out ya existe");
+            }
+        } catch (IOException e){
+            System.out.println("Ha ocurrido un error con la creacion del out de la reserva");
+            e.printStackTrace();
+        }
+    }
+    public void contabilidadOutCreate(){
+        try{
+            File contabilidad = new File("Contabilidad.out");
+            if(contabilidad.createNewFile()){
+                System.out.println("Se ha creado el archivo Contabilidad.out");
+            } else{
+                System.out.println("El archivo Contabilidad.out ya existe");
+            }
+        } catch (IOException e){
+            System.out.println("Ha ocurrido un error con la creacion de de Contabilidad.out");
+            e.printStackTrace();
+        }
+    }
+    public void reservacionesOut()throws IOException{
+        BufferedWriter archivo = null;
+        PrintWriter escritor = null;
+        try {
+            archivo = new BufferedWriter( new FileWriter("Reservaciones.out"));
+            escritor = new PrintWriter(archivo);
+            for (LocalDate time : reservacion.keySet()) {
+                for(String a : reservacion.get(time)){
+                    escritor.println(a);
+                    reservacionesString = reservacionesString + "\n" + a;
+                }
+            }
+        } finally {
+            escritor.close();
+            archivo.close();
+        }
+    }
+    public void contabilidadOut()throws IOException{
+        BufferedWriter archivo = null;
+        PrintWriter escritor = null;
+        try {
+            archivo = new BufferedWriter(new FileWriter("Contabilidad.out"));
+            escritor = new PrintWriter(archivo);
+            for(LocalDate time : contabilidad.keySet()){
+                for(String a : reservacion.get(time)){
+                    escritor.println(a);
+                    contabilidadString = contabilidadString + "\n" + a;
+                }
+            }
+        } catch (Exception ex){
+            System.out.println("Error: " + ex.getMessage());
+        }finally{
+            archivo.close();
+            escritor.close();
+        }
     }
 }
