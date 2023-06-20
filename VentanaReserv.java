@@ -13,6 +13,7 @@ public class VentanaReserv extends JFrame {
     private JPanel p4 = new JPanel();
     private JPanel p5 = new JPanel();
     private JPanel p6 = new JPanel();
+    private JTextField tituReservacion; 
     private JPanel pOption = new JPanel();
     private JComboBox<Integer> caja1 = new JComboBox<Integer>();
     private JComboBox<Integer> caja2 = new JComboBox<Integer>();
@@ -64,7 +65,8 @@ public class VentanaReserv extends JFrame {
         p1.setLayout(new FlowLayout(FlowLayout.LEFT));
         add(p1,BorderLayout.CENTER);
         p2.add(new JLabel("Cedula del titular de la reservacion:"));
-        p2.add(new JTextField(9));
+        tituReservacion = new JTextField(9);
+        p2.add(tituReservacion);
         p2.setLayout(new FlowLayout(FlowLayout.LEFT));
         add(p2,BorderLayout.CENTER);
         p3.add(new JLabel("Tipo de habitacion:"));
@@ -95,8 +97,8 @@ public class VentanaReserv extends JFrame {
         CantDias.addItemListener(new OyenteItem());
         p6.setLayout(new FlowLayout(FlowLayout.LEFT));
         add(p6, BorderLayout.CENTER);
-        Siguiente = new JButton("Siguiente");
-        Cancelar = new JButton("Cancelacion");
+        Siguiente = new JButton("Enviar");
+        Cancelar = new JButton("Cancelar");
         Siguiente.addActionListener(new OyenteBoton());
         Cancelar.addActionListener(new OyenteBoton());
         pOption.add(Siguiente);
@@ -107,6 +109,7 @@ public class VentanaReserv extends JFrame {
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
+
     public static void main(String[] args){
         VentanaReserv v = new VentanaReserv();
     }
@@ -118,7 +121,14 @@ public class VentanaReserv extends JFrame {
 
     class OyenteBoton implements ActionListener{
         public void actionPerformed(ActionEvent evento){
-
+            String accion = evento.getActionCommand();
+            if(evento.getSource() instanceof JButton){
+                if("Enviar".equals(accion)){
+                    JOptionPane.showMessageDialog(null,"Se ha reservado con exito.","Aviso",JOptionPane.PLAIN_MESSAGE);
+                }else{
+                    JOptionPane.showMessageDialog(null,"Se ha cancelado su reservacion.","Aviso",JOptionPane.PLAIN_MESSAGE);
+                }
+            }
         }
         
     }
