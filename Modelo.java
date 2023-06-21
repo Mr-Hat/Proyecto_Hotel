@@ -12,7 +12,7 @@ public class Modelo{
     private int pisos;
     private String contabilidadString = "";
     private String reservacionesString = "";
-    private Map<LocalDate, ArrayList<Integer>> transferencias = new HashMap<>();
+    private Map<LocalDate, Integer> transferencias = new HashMap<>();
     private Map<String, Float> precios = new HashMap<>();
     private Map<String, String> nombres = new HashMap<>();
     private Map<int[], String> numHabit = new HashMap<>();  
@@ -68,7 +68,8 @@ public class Modelo{
                     break;
                     default:
                     String habiLinea[] = primera.split(" ");
-                    for(int i = 1; i <= habitaciones; i++){
+                    int limit = Integer.parseInt(habiLinea[0]);
+                    for(int i = 1; i <= limit; i++){
                         int[] habipiso = new int[2];
                         habipiso[0] = piso;
                         habipiso[1] = habitacion;
@@ -94,25 +95,25 @@ public class Modelo{
             int tipoHabitaciones = Integer.parseInt(tipos[0]);
             int servicios = Integer.parseInt(tipos[1]);
             int menu = Integer.parseInt(tipos[2]);
-            for(int i = 0; i< tipoHabitaciones; i++){
+            for(int i = 1; i<= tipoHabitaciones; i++){
                 linea = preciosIn.readLine();
                 String[] resultado = linea.split(" ");
                 float valueHabit = Float.parseFloat(resultado[1]);
                 precios.put(resultado[0], valueHabit);
             }
-            for(int j = 0; j<servicios;j++){
+            for(int j = 1; j<=servicios;j++){
                 linea = preciosIn.readLine();
-                String[] resultado = linea.split(" ", 3);
-                float valueServ = Float.parseFloat(resultado[1]);
-                precios.put(resultado[0], valueServ);
-                nombres.put(resultado[0], resultado[2]);
+                String[] resultadoServ = linea.split(" ", 3);
+                float valueServ = Float.parseFloat(resultadoServ[1]);
+                precios.put(resultadoServ[0], valueServ);
+                nombres.put(resultadoServ[0], resultadoServ[2]);
             }
-            for(int k = 0; k<menu; k++){
+            for(int k = 1; k<=menu; k++){
                 linea = preciosIn.readLine();
-                String[] resultado = linea.split(" ", 3);
-                float valueMenu = Float.parseFloat(resultado[1]);
-                precios.put(resultado[0], valueMenu);
-                nombres.put(resultado[0], resultado[2]);
+                String[] resultadoMenu = linea.split(" ", 3);
+                float valueMenu = Float.parseFloat(resultadoMenu[1]);
+                precios.put(resultadoMenu[0], valueMenu);
+                nombres.put(resultadoMenu[0], resultadoMenu[2]);
             }
         } finally{
             if(preciosIn != null) {preciosIn.close();}
@@ -132,7 +133,6 @@ public class Modelo{
                 LocalDate[] fechas = new LocalDate[2];
                 fechas[0] = fechLleg;
                 fechas[1] = fechSalid;
-                transferencias.put(fecha, new ArrayList<Integer>());
                 if(habit[0] == 0 && habit[1] == 0){
                     loop: for(int numPersona : numPersonaEnHabit.values()){
                         if(numPersona >= num){
@@ -140,27 +140,57 @@ public class Modelo{
                                 case 1:
                                 List<int[]> indivTrans = getHabitacion("INDIV");
                                 habit = buscarHabitacionDisponible(indivTrans, fechLleg, fechSalid);
-                                transferencias.get(fecha).add(1);
+                                if(transferencias.containsKey(fecha)){
+                                    int temp = transferencias.get(fecha);
+                                    temp++;
+                                    transferencias.put(fecha, temp);
+                                } else{
+                                    transferencias.put(fecha, 1);
+                                }
                                 break loop;
                                 case 2:
                                 List<int[]> matriTrans = getHabitacion("MATRI");
                                 habit = buscarHabitacionDisponible(matriTrans, fechLleg, fechSalid);
-                                transferencias.get(fecha).add(1);
+                                if(transferencias.containsKey(fecha)){
+                                    int temp = transferencias.get(fecha);
+                                    temp++;
+                                    transferencias.put(fecha, temp);
+                                } else{
+                                    transferencias.put(fecha, 1);
+                                }
                                 break loop; 
                                 case 3:
                                 List<int[]> dobleTrans = getHabitacion("DOBLE");
                                 habit = buscarHabitacionDisponible(dobleTrans, fechLleg, fechSalid);
-                                transferencias.get(fecha).add(1);
+                                if(transferencias.containsKey(fecha)){
+                                    int temp = transferencias.get(fecha);
+                                    temp++;
+                                    transferencias.put(fecha, temp);
+                                } else{
+                                    transferencias.put(fecha, 1);
+                                }
                                 break loop;
                                 case 4:
                                 List<int[]> cuadTrans = getHabitacion("CUADR");
                                 habit = buscarHabitacionDisponible(cuadTrans, fechLleg, fechSalid);
-                                transferencias.get(fecha).add(1);
+                                if(transferencias.containsKey(fecha)){
+                                    int temp = transferencias.get(fecha);
+                                    temp++;
+                                    transferencias.put(fecha, temp);
+                                } else{
+                                    transferencias.put(fecha, 1);
+                                }
                                 break loop;
                                 case 10:
                                 List<int[]> suiteTrans = getHabitacion("SUITE");
                                 habit = buscarHabitacionDisponible(suiteTrans, fechLleg, fechSalid);
-                                transferencias.get(fecha).add(1);
+                                if(transferencias.containsKey(fecha)){
+                                    int temp = transferencias.get(fecha);
+                                    temp++;
+                                    transferencias.put(fecha, temp);
+                                } else{
+                                    transferencias.put(fecha, 1);
+                                }
                                 break loop;
                             }
                         }
@@ -302,6 +332,23 @@ public class Modelo{
         } else{
             reportes.put(fechas, new ArrayList<String>());
             reportes.get(fechas).add("Del " + fechaInicio.toString() + " al " + fechaFin.toString() + " " + countA + " Adultos atendidos\n\t\t\t\t\t" + countN + " Ninos atendidos");
+        }
+    }
+    public void transferenciasTotales(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        int transfe = 0;
+        for(LocalDate time : transferencias.keySet()){
+            if((time.isAfter(fechaInicio) || time.isEqual(fechaInicio) && (time.isBefore(fechaFin) || time.isEqual(fechaFin)))){
+                transfe += transferencias.get(time);                
+            }
+        }
+        if(reportes.containsKey(fechas)){
+             reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + transfe + "\t\tTransferencias totales");
+        } else{
+            reportes.put(fechas, new ArrayList<String>());
+            reportes.get(fechas).add("Del " + fechaInicio + " al " + fechaFin + " " + transfe + "\t\tTransferencias totales");
         }
     }
     public void ingresosCamasAdicionales(LocalDate fechaInicio, LocalDate fechaFin){
@@ -476,30 +523,10 @@ public class Modelo{
             }
         }
     }
-    public void habitaciones(LocalDate fechaInicio, LocalDate fechaFin){
+    public void habitacionesOcupadas(LocalDate fechaInicio, LocalDate fechaFin){
         LocalDate[] fechas = new LocalDate[2];
         fechas[0] = fechaInicio;
         fechas[1] = fechaFin;
-        for(LocalDate[] time : habitacionesEnFecha.keySet()){
-            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaInicio) || time[1].isBefore(fechaInicio))){
-                ArrayList<int[]> lista = habitacionesEnFecha.get(time);
-                int reservadas = lista.size();
-                habitacionesReservadasEnUnDia.put(fechaInicio, reservadas);
-                String reservadasOut = "Al " + fechaInicio.toString() + "\t\t\t" + reservadas + "%\t\tHabitaciones reservadas"; 
-                int libres = reservadas - habitaciones;
-                String libresOut = "Al " + fechaInicio.toString() + "\t\t\t" + libres + "%\t\tHabitaciones libres"; 
-                habitacionesLibresEnUnDia.put(fechaInicio, libres);
-                if(reportes.containsKey(fechas)){
-                    reportes.get(fechas).add(reservadasOut);
-                    reportes.get(fechas).add(libresOut);
-                } else{
-                    reportes.put(fechas, new ArrayList<String>());
-                    reportes.get(fechas).add(reservadasOut);
-                    reportes.get(fechas).add(libresOut);
-                }
-                break;
-            }
-        }
         for(LocalDateTime time : checkIns.keySet()){
             LocalDate tiempo = time.toLocalDate();
             if(tiempo.isEqual(fechaInicio)){
@@ -513,6 +540,47 @@ public class Modelo{
                     reportes.put(fechas, new ArrayList<String>());
                     reportes.get(fechas).add(ocupadasOut);
                 }
+            }
+        }
+    }
+    public void habitacionesReservadas(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        for(LocalDate[] time : habitacionesEnFecha.keySet()){
+            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaInicio) || time[1].isBefore(fechaInicio))){
+                ArrayList<int[]> lista = habitacionesEnFecha.get(time);
+                int reservadas = lista.size();
+                habitacionesReservadasEnUnDia.put(fechaInicio, reservadas);
+                String reservadasOut = "Al " + fechaInicio.toString() + "\t\t\t" + reservadas + "%\t\tHabitaciones reservadas"; 
+                if(reportes.containsKey(fechas)){
+                    reportes.get(fechas).add(reservadasOut);
+                } else{
+                    reportes.put(fechas, new ArrayList<String>());
+                    reportes.get(fechas).add(reservadasOut);
+                }
+                break;
+            }
+        }
+    }
+    public void habitacionesLibres(LocalDate fechaInicio, LocalDate fechaFin){
+        LocalDate[] fechas = new LocalDate[2];
+        fechas[0] = fechaInicio;
+        fechas[1] = fechaFin;
+        for(LocalDate[] time : habitacionesEnFecha.keySet()){
+            if((time[0].isEqual(fechaInicio) || time[0].isAfter(fechaInicio)) && (time[1].isEqual(fechaInicio) || time[1].isBefore(fechaInicio))){
+                ArrayList<int[]> lista = habitacionesEnFecha.get(time);
+                int reservadas = lista.size();
+                int libres = reservadas - habitaciones;
+                String libresOut = "Al " + fechaInicio.toString() + "\t\t\t" + libres + "%\t\tHabitaciones libres"; 
+                habitacionesLibresEnUnDia.put(fechaInicio, libres);
+                if(reportes.containsKey(fechas)){
+                    reportes.get(fechas).add(libresOut);
+                } else{
+                    reportes.put(fechas, new ArrayList<String>());
+                    reportes.get(fechas).add(libresOut);
+                }
+                break;
             }
         }
     }

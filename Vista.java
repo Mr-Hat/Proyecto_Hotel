@@ -2,40 +2,46 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Vista extends JFrame{
-    private JMenuBar barra = new JMenuBar();
-    public JMenuItem boton1,boton2,boton3,boton4,boton5;
-    private JMenu menu = new JMenu("Transaccion");
+    private JPanel p1;
+    public JButton boton1,boton2,boton3,boton4,boton5;
     public Vista(){
         super("Menu Hotel");
-        setJMenuBar(barra);
-        menu.setMnemonic('o');
-        barra.add(menu);
-        boton1 = new JMenuItem("Reservaciones",'r');
-        boton2 = new JMenuItem("Check-in",'i');
-        boton3 = new JMenuItem("Check-out",'o');
-        boton4 = new JMenuItem("Cancelacion",'C');
-        boton5 = new JMenuItem("Reportes", 'x');
-        menu.add(boton1);
-        menu.add(boton2);
-        menu.add(boton3);
-        menu.add(boton4);
-        menu.add(boton5);
+        p1 = new JPanel();
+        p1.setLayout(new GridLayout(3,2));
+        boton1 = new JButton("Reservaciones");
+        boton2 = new JButton("Check-in");
+        boton3 = new JButton("Check-out");
+        boton4 = new JButton("Cancelacion");
+        boton5 = new JButton("Reportes");
+        p1.add(boton1);
+        p1.add(boton2);
+        p1.add(boton3);
+        p1.add(boton4);
+        p1.add(boton5);
+        add(p1);
     }
     public class Reportes extends JFrame{
         private Container panel;
         private JPanel p1, p2, p3, p4;
         public JButton enviar, cancelar;
-        public JComboBox<Integer> box1 = new JComboBox<>();
-        public JComboBox<Integer> box2 = new JComboBox<>();
-        public JComboBox<Integer> box3 = new JComboBox<>();
-        public JComboBox<Integer> box4 = new JComboBox<>();
-        public JComboBox<Integer> box5 = new JComboBox<>();
-        public JComboBox<Integer> box6 = new JComboBox<>();
-        public JComboBox<String> opciones = new JComboBox<>();
+        public JComboBox<Integer> box1;
+        public JComboBox<Integer> box2;
+        public JComboBox<Integer> box3;
+        public JComboBox<Integer> box4;
+        public JComboBox<Integer> box5;
+        public JComboBox<Integer> box6;
+        public JComboBox<String> opciones;
         public Reportes(){
             super("Reportes");
             panel = getContentPane();
             panel.setLayout(new GridLayout(3, 1));
+            box1 = new JComboBox<Integer>();
+            box2 = new JComboBox<Integer>();
+            box3 = new JComboBox<Integer>();
+            box4 = new JComboBox<Integer>();
+            box5 = new JComboBox<Integer>();
+            box6 = new JComboBox<Integer>();
+            opciones = new JComboBox<String>();
             for(int i = 1; i<= 31; i++){
                 box1.addItem(i);
                 box4.addItem(i);
@@ -104,6 +110,14 @@ public class Vista extends JFrame{
             p4 = new JPanel();
             p4.setLayout(new FlowLayout(FlowLayout.LEFT));
             p4.add(new JLabel("Hora de realizacion:"));
+            hora1 = new JComboBox<Integer>();
+            hora2 = new JComboBox<Integer>();
+            for(int i = 0; i<24; i++){
+                hora1.addItem(i);
+            }
+            for(int i = 0; i<60; i++){
+                hora2.addItem(i);
+            }
             p4.add(hora1);
             p4.add(hora2);
             add(p4);
@@ -121,7 +135,6 @@ public class Vista extends JFrame{
 
     public class VentanaReserv extends JFrame {
         private Container panel;
-        private boolean limite;
         private JPanel p2 = new JPanel();
         private JPanel p3 = new JPanel();
         private JPanel p4 = new JPanel();
@@ -129,20 +142,28 @@ public class Vista extends JFrame{
         private JPanel p1 = new JPanel();
         public JTextField tituReservacion; 
         private JPanel pOption = new JPanel();
-        public JComboBox<Integer> fechin1 = new JComboBox<Integer>();
-        public JComboBox<Integer> fechin2 = new JComboBox<Integer>();
-        public JComboBox<Integer> fechin3 = new JComboBox<Integer>();
-        public JComboBox<Integer> fechout1 = new JComboBox<Integer>();
-        public JComboBox<Integer> fechout2 = new JComboBox<Integer>();
-        public JComboBox<Integer> fechout3 = new JComboBox<Integer>();
-        public JComboBox<Integer> adultos = new JComboBox<Integer>();
-        public JComboBox<Integer> ninos = new JComboBox<Integer>();
-        public JComboBox<String> tipoHabitaciones = new JComboBox<String>();
+        public JComboBox<Integer> fechin1;
+        public JComboBox<Integer> fechin2;
+        public JComboBox<Integer> fechin3;
+        public JComboBox<Integer> fechout1;
+        public JComboBox<Integer> fechout2;
+        public JComboBox<Integer> fechout3;
+        public JComboBox<Integer> adultos;
+        public JComboBox<Integer> ninos;
+        public JComboBox<String> tipoHabitaciones;
         public JButton siguiente, cancelar;
         public VentanaReserv (){
             super("Hoteleria Mi Refugio");
             panel = getContentPane();
             panel.setLayout(new GridLayout(7,1));
+            fechin1 = new JComboBox<Integer>();
+            fechin2 = new JComboBox<Integer>();
+            fechin3 = new JComboBox<Integer>();
+            fechout1 = new JComboBox<Integer>();
+            fechout2 = new JComboBox<Integer>();
+            fechout3 = new JComboBox<Integer>();
+            adultos = new JComboBox<Integer>();
+            ninos = new JComboBox<Integer>();
             for(int i = 1 ;i <=31 ; i++){
                 fechin1.addItem(i);
                 fechout1.addItem(i);
@@ -161,6 +182,7 @@ public class Vista extends JFrame{
             for(int i = 0; i < 10; i++){
                 ninos.addItem(i);
             }
+            tipoHabitaciones = new JComboBox<String>();
             tipoHabitaciones.addItem("Individual");
             tipoHabitaciones.addItem("Matrimonial");
             tipoHabitaciones.addItem("Doble");
@@ -194,11 +216,6 @@ public class Vista extends JFrame{
             add(p1,BorderLayout.CENTER);
             siguiente = new JButton("Enviar reserva");
             cancelar = new JButton("Cancelar");
-            if(limite == false){
-                siguiente.setEnabled(false);
-            } else{
-                siguiente.setEnabled(true);
-            }
             pOption.add(siguiente);
             pOption.add(cancelar);
             pOption.setLayout(new FlowLayout(FlowLayout.CENTER));
@@ -211,7 +228,7 @@ public class Vista extends JFrame{
     public class VentanaCheckIn extends JFrame{
         private Container contenedor;
         public JComboBox<Integer> hora1, hora2;
-        private JPanel p2,p3,p4,p5;
+        private JPanel p2,p4,p5;
         public JTextField cedula;
         public JButton enviar, cancelar;
         public VentanaCheckIn(){
@@ -224,15 +241,20 @@ public class Vista extends JFrame{
             p5 = new JPanel();
             p5.setLayout(new FlowLayout(FlowLayout.LEFT));
             p5.add(new JLabel("Hora de entrada"));
+            hora1 = new JComboBox<Integer>();
+            for(int i = 0; i < 24; i++){
+                hora1.addItem(i);
+            }
+            hora2 = new JComboBox<Integer>();
+            for(int j = 0; j < 60; j++){
+                hora2.addItem(j);
+            }
             p5.add(hora1);
             p5.add(hora2);
+            add(p5, BorderLayout.WEST);
             cedula = new JTextField(10);
             p2.add(cedula);
             add(p2, BorderLayout.WEST);
-            p3 = new JPanel();
-            p3.setLayout(new FlowLayout(FlowLayout.LEFT));
-            p3.add(new JLabel("Numero de habitacion:"));
-            add(p3,BorderLayout.WEST);
             p4 = new JPanel();
             p4.setLayout(new FlowLayout(FlowLayout.CENTER));
             enviar = new JButton("Enviar check-in");
@@ -264,6 +286,14 @@ public class Vista extends JFrame{
             p3 = new JPanel();
             p3.setLayout(new FlowLayout(FlowLayout.LEFT));
             p3.add(new JLabel("Hora de entrada:"));
+            hora1 = new JComboBox<Integer>();
+            hora2 = new JComboBox<Integer>();
+            for(int i = 0; i < 24; i++){
+                hora1.addItem(i);
+            }
+            for(int i = 0; i<=59;i++){
+                hora2.addItem(i);
+            }
             p3.add(hora1);
             p3.add(hora2);
             add(p3,BorderLayout.WEST);
