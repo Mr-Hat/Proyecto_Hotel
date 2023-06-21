@@ -25,7 +25,7 @@ public class Vista extends JFrame{
     public class Exportar extends JFrame{
         private Container panel;
         private JPanel p1;
-        public JButton reservaciones, contabilidad, verRes, verCont;
+        public JButton reservaciones, contabilidad, verRes, verCont, cancelar;
         public Exportar(){
             super("Exportar Datos");
             panel = getContentPane();
@@ -36,10 +36,12 @@ public class Vista extends JFrame{
             contabilidad = new JButton("Exportar Contabilidad");
             verRes = new JButton("Ver Reservaciones");
             verCont = new JButton("Ver Contabilidad");
+            cancelar = new JButton("Cancelar");
             p1.add(reservaciones);
             p1.add(contabilidad);
             p1.add(verRes);
             p1.add(verCont);
+            p1.add(cancelar);
             add(p1);
         }
     }
@@ -47,7 +49,8 @@ public class Vista extends JFrame{
         private Container panel;
         private JPanel p1;
         public JTextArea datos;
-        private JScrollPane scroll;
+        public JButton volver;
+        public JScrollPane scroll;
         public VerReserva(String texto){
             super("Datos Reserva");
             panel = getContentPane();
@@ -55,18 +58,21 @@ public class Vista extends JFrame{
             p1 = new JPanel();
             p1.setLayout(new FlowLayout(FlowLayout.LEFT));
             datos = new JTextArea(texto);
+            volver = new JButton("Volver");
             scroll = new JScrollPane(datos);
             scroll.setBounds(10, 50, 300, 400);
             p1.add(datos);
             p1.add(scroll);
+            p1.add(volver);
             add(p1);
         }
     }
     public class VerContabilidad extends JFrame{
         private Container panel;
         private JPanel p1;
-        public JTextArea datos;
+        private JTextArea datos;
         private JScrollPane scroll;
+        public JButton volver;
         public VerContabilidad(String texto){
             super("Datos Contabilidad");
             panel = getContentPane();
@@ -76,8 +82,10 @@ public class Vista extends JFrame{
             datos = new JTextArea(texto);
             scroll = new JScrollPane(datos);
             scroll.setBounds(10, 50, 400, 300);
-            p1.add(scroll);
+            volver = new JButton("Volver");
             p1.add(datos);
+            p1.add(scroll);
+            p1.add(volver);
             add(p1);
         }
     }
@@ -146,6 +154,8 @@ public class Vista extends JFrame{
             p4.setLayout(new FlowLayout(FlowLayout.CENTER));
             enviar = new JButton("Generar Reporte");
             cancelar = new JButton("Cancelar Operacion");
+            p4.add(enviar);
+            p4.add(cancelar);
             add(p1, BorderLayout.WEST);
             add(p2, BorderLayout.WEST);
             add(p3, BorderLayout.WEST);
@@ -189,8 +199,6 @@ public class Vista extends JFrame{
             p3.add(enviar);
             p3.add(cancelar);
             add(p3, BorderLayout.CENTER);
-            setSize(350, 150);
-            setVisible(true);
         }
     }
 
@@ -281,8 +289,6 @@ public class Vista extends JFrame{
             pOption.add(cancelar);
             pOption.setLayout(new FlowLayout(FlowLayout.CENTER));
             add(pOption,BorderLayout.CENTER);
-            setSize(400, 250);
-            setVisible(true);
         }
     }
 
@@ -323,8 +329,6 @@ public class Vista extends JFrame{
             p4.add(enviar);
             p4.add(cancelar);
             add(p4, BorderLayout.CENTER);
-            setSize(400, 200);
-            setVisible(true);
         }
     }
 
@@ -365,8 +369,6 @@ public class Vista extends JFrame{
             p4.add(enviar);
             p4.add(cancelar);
             add(p4, BorderLayout.CENTER);
-            setSize(400, 200);
-            setVisible(true);
         }
     }    
 }

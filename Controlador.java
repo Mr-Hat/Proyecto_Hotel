@@ -18,7 +18,7 @@ public class Controlador implements ActionListener, ItemListener{
     private String tipo,cedula, cedulaIn, cedulaOut, cedulaCan;
     private LocalDate[] fechaReserva, fechaReportes;
     private LocalTime horaIn, horaOut, horaCan;
-    private boolean ex, res, can, out, in, rep,a, b, c, d, e, f, g, h, i, j, k, l, fechaRes, fechaRep,dia1Rep, dia2Rep, mes1Rep, mes2Rep, anio1Rep, anio2Rep, adultosRes, ninosRes, tipoRes, horaCancel, cedulaCanFlag, horaInFlag, cedulaInFlag, cedulaOutFlag, cedulaResFlag, horaOutFlag, dia1Res, dia2Res, mes1Res, mes2Res, anio1Res, anio2Res;
+    private boolean a, b, c, d, e, f, g, h, i, j, k, l, fechaRes, fechaRep,dia1Rep, dia2Rep, mes1Rep, mes2Rep, anio1Rep, anio2Rep, adultosRes, ninosRes, tipoRes, horaCancel, cedulaCanFlag, horaInFlag, cedulaInFlag, cedulaOutFlag, cedulaResFlag, horaOutFlag, dia1Res, dia2Res, mes1Res, mes2Res, anio1Res, anio2Res;
     public Controlador(Modelo modelo, Vista vista){
         this.modelo = modelo;
         this.vista = vista;
@@ -35,6 +35,79 @@ public class Controlador implements ActionListener, ItemListener{
         vista.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         vista.setSize(300,400);
         vista.setVisible(true);
+        Vista.Reportes rp = new Vista().new Reportes();
+        this.reportes = rp;
+        reportes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        reportes.setVisible(false);
+        reportes.setSize(550,300);
+        reportes.opciones.addItemListener(this);
+        reportes.box1.addItemListener(this);
+        reportes.box2.addItemListener(this);
+        reportes.box3.addItemListener(this);
+        reportes.box4.addItemListener(this);
+        reportes.box5.addItemListener(this);
+        reportes.box6.addItemListener(this);
+        reportes.enviar.addActionListener(this);
+        reportes.enviar.setEnabled(false);
+        reportes.cancelar.addActionListener(this);
+        reportes.setVisible(false);
+        Vista.VentanaReserv nr = new Vista().new VentanaReserv();
+        this.reserva = nr;
+        reserva.setSize(400,250);
+        reserva.tipoHabitaciones.addItemListener(this);
+        reserva.siguiente.addActionListener(this);
+        reserva.siguiente.setEnabled(false);
+        reserva.cancelar.addActionListener(this);
+        reserva.tipoHabitaciones.addItemListener(this);
+        reserva.fechin1.addItemListener(this);
+        reserva.fechin2.addItemListener(this);
+        reserva.fechin3.addItemListener(this);
+        reserva.fechout1.addItemListener(this);
+        reserva.fechout2.addItemListener(this);
+        reserva.fechout3.addItemListener(this);
+        reserva.setVisible(false);
+        reserva.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Vista.VentanaCheckIn nci = new Vista().new VentanaCheckIn();
+        this.checkIn = nci;
+        checkIn.setSize(400,200);
+        checkIn.enviar.addActionListener(this);
+        checkIn.enviar.setEnabled(false);
+        checkIn.cancelar.addActionListener(this);
+        checkIn.hora1.addItemListener(this);
+        checkIn.hora2.addItemListener(this);
+        checkIn.setVisible(false);
+        checkIn.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Vista.VentanaCheckOut nco = new Vista().new VentanaCheckOut();
+        this.checkOut = nco;
+        checkOut.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        checkOut.setSize(400,200);
+        checkOut.enviar.addActionListener(this);
+        checkOut.enviar.setEnabled(false);
+        checkOut.cancelar.addActionListener(this);
+        checkOut.hora1.addItemListener(this);
+        checkOut.hora2.addItemListener(this);
+        checkOut.setVisible(false);
+        Vista.VentanaCancelacion nc = new Vista().new VentanaCancelacion();
+        this.cancelacion = nc;
+        cancelacion.setSize(300,400);
+        cancelacion.enviar.addActionListener(this);
+        cancelacion.enviar.setEnabled(false);
+        cancelacion.cancelar.addActionListener(this);
+        cancelacion.hora1.addItemListener(this);
+        cancelacion.hora2.addItemListener(this);
+        cancelacion.setVisible(false);
+        cancelacion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Vista.Exportar exp = new Vista().new Exportar();
+        this.exportar = exp;
+        exportar.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        exportar.setSize(300, 400);
+        exportar.reservaciones.addActionListener(this);
+        exportar.contabilidad.addActionListener(this);
+        exportar.verRes.addActionListener(this);
+        exportar.verCont.addActionListener(this);
+        exportar.verRes.setEnabled(false);
+        exportar.verCont.setEnabled(false);
+        exportar.setVisible(false);
     }
     public void iniciarModelo()throws IOException{
         modelo.inicializacion();
@@ -44,22 +117,9 @@ public class Controlador implements ActionListener, ItemListener{
     public void actionPerformed(ActionEvent evento){
         if(evento.getSource() instanceof JButton){
             if(vista.boton1 == evento.getSource()){
-                res = true;
-                ex = rep = in = out = can = false;
-                Vista.VentanaReserv nr = new Vista().new VentanaReserv();
-                this.reserva = nr;
-                this.reserva.setSize(300,400);
-                this.reserva.tipoHabitaciones.addItemListener(this);
-                this.reserva.siguiente.addActionListener(this);
-                this.reserva.cancelar.addActionListener(this);
-                this.reserva.tipoHabitaciones.addItemListener(this);
-                this.reserva.fechin1.addItemListener(this);
-                this.reserva.fechin2.addItemListener(this);
-                this.reserva.fechin3.addItemListener(this);
-                this.reserva.fechout1.addItemListener(this);
-                this.reserva.fechout2.addItemListener(this);
-                this.reserva.fechout3.addItemListener(this);
-                cedula = nr.tituReservacion.getText();
+                vista.setVisible(false);
+                reserva.setVisible(true);
+                cedula = reserva.tituReservacion.getText();
                 if(cedula != null){
                     cedulaResFlag = true;
                 }
@@ -70,35 +130,32 @@ public class Controlador implements ActionListener, ItemListener{
                     fechaReserva[1] = fechaReserva2;
                     fechaRes = true;
                 }
-                if(this.reserva.siguiente == evento.getSource()){
-                    this.reserva.siguiente.setEnabled(false);
+                if(reserva.siguiente == evento.getSource()){
+                    reserva.siguiente.setEnabled(false);
                     if(!(dia1Reserva == 1 && dia2Reserva == 1 && mes1Reserva == 1 && mes2Reserva == 1 && anio1Reserva == 2023 && anio2Reserva == 2023 && adultos == 0 && ninos == 0 && tipo == "Individual")){
                         if(adultos + ninos < limit){
                             int num = adultos + ninos;
                             if(fechaRes == true && cedulaResFlag == true){
                                 modelo.reserva(fechaReserva[0], fechaReserva[1], tipo, num, adultos, ninos, cedula);
-                                this.reserva.siguiente.setEnabled(true);
+                                reserva.siguiente.setEnabled(true);
                                 JOptionPane.showMessageDialog(null,"Se ha reservado con exito.","Aviso",JOptionPane.PLAIN_MESSAGE);
                             }
                         }
                     }
                 } 
+                if(reserva.cancelar == evento.getSource()){
+                    reserva.setVisible(false);
+                    vista.setVisible(true);
+                }
             }
-            else if(vista.boton2 == evento.getSource()){
-                in = true;
-                ex =res = rep = out = can = false;
-                Vista.VentanaCheckIn nci = new Vista().new VentanaCheckIn();
-                this.checkIn = nci;
-                this.checkIn.setSize(300,400);
-                this.checkIn.enviar.addActionListener(this);
-                this.checkIn.cancelar.addActionListener(this);
-                this.checkIn.hora1.addItemListener(this);
-                this.checkIn.hora2.addItemListener(this);
-                if(this.checkIn.enviar == evento.getSource()){
-                    this.checkIn.enviar.setEnabled(false);
+            if(vista.boton2 == evento.getSource()){
+                vista.setVisible(false);
+                checkIn.setVisible(true);
+                if(checkIn.enviar == evento.getSource()){
+                    checkIn.enviar.setEnabled(false);
                     if(horaInFlag == true && cedulaInFlag == true){
                         modelo.checkIn(cedulaIn, horaIn);
-                        this.checkIn.enviar.setEnabled(true);
+                        checkIn.enviar.setEnabled(true);
                         JOptionPane.showMessageDialog(null,"Se ha hecho el check-in con exito.","Aviso",JOptionPane.PLAIN_MESSAGE);
                     } 
                 } 
@@ -106,25 +163,45 @@ public class Controlador implements ActionListener, ItemListener{
                     horaIn = LocalTime.of(hora1In, hora2In);
                     horaInFlag = true;
                 }
-                cedulaIn = nci.cedula.getText();
+                cedulaIn = checkIn.cedula.getText();
                 if(cedulaIn != null){
                     cedulaInFlag = true;
                 }
-            } else if(vista.boton3 == evento.getSource()){
-                out = true;
-                ex = res = in = rep = can = false;
-                Vista.VentanaCheckOut nco = new Vista().new VentanaCheckOut();
-                this.checkOut = nco;
-                this.checkOut.setSize(300,400);
-                this.checkOut.enviar.addActionListener(this);
-                this.checkOut.cancelar.addActionListener(this);
-                this.checkOut.hora1.addItemListener(this);
-                this.checkOut.hora2.addItemListener(this);
-                if(this.checkOut.enviar == evento.getSource()){
-                this.checkOut.enviar.setEnabled(false);
+            }
+            if(checkIn.cancelar == evento.getSource()){
+                checkIn.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(checkOut.cancelar == evento.getSource()){
+                checkOut.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(cancelacion.cancelar == evento.getSource()){
+                cancelacion.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(reportes.cancelar == evento.getSource()){
+                reportes.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(exportar.cancelar == evento.getSource()){
+                exportar.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(verContabilidad.volver == evento.getSource()){
+                verContabilidad.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(verReserva.volver == evento.getSource()){
+                verReserva.setVisible(false);
+                vista.setVisible(true);
+            }
+            if(vista.boton3 == evento.getSource()){
+                if(checkOut.enviar == evento.getSource()){
+                checkOut.enviar.setEnabled(false);
                 if(horaOutFlag == true && cedulaOutFlag == true){
                         modelo.checkOut(cedulaOut, horaOut);
-                        this.checkOut.enviar.setEnabled(true);
+                        checkOut.enviar.setEnabled(true);
                         JOptionPane.showMessageDialog(null,"Se ha hecho el check-out con exito.","Aviso",JOptionPane.PLAIN_MESSAGE);
                     } 
                 } 
@@ -132,51 +209,27 @@ public class Controlador implements ActionListener, ItemListener{
                     horaOut = LocalTime.of(hora1Out, hora2Out);
                     horaOutFlag = true;
                 }
-                cedulaOut = nco.cedula.getText();
+                cedulaOut = checkOut.cedula.getText();
                 if(cedulaOut != null){
                     cedulaOutFlag = true;
                 }
-            }else if(vista.boton4 == evento.getSource()){
-                can = true;
-                ex = res = in = out = rep = false;
-                Vista.VentanaCancelacion nc = new Vista().new VentanaCancelacion();
-                this.cancelacion = nc;
-                this.cancelacion.setSize(300,400);
-                this.cancelacion.enviar.addActionListener(this);
-                this.cancelacion.cancelar.addActionListener(this);
-                this.cancelacion.hora1.addItemListener(this);
-                this.cancelacion.hora2.addItemListener(this);
+            }if(vista.boton4 == evento.getSource()){
                 if(hora1Can != 0 && hora2Can != 0){
                     horaCan = LocalTime.of(hora1Can, hora2Can);
                     horaCancel = true;
                 }
-                cedulaCan = nc.cedula.getText();
+                cedulaCan = cancelacion.cedula.getText();
                 if(cedulaCan != null){
                     cedulaCanFlag = true;
                 }
-                if(this.cancelacion.enviar == evento.getSource()){
-                    this.cancelacion.enviar.setEnabled(false);
-                    if(horaCancel == true && cedulaCanFlag == true){
+                if(horaCancel == true && cedulaCanFlag == true){
+                    cancelacion.enviar.setEnabled(true);
+                    if(cancelacion.enviar == evento.getSource()){
                         modelo.cancelacion(cedulaCan, horaCan);
-                        this.cancelacion.enviar.setEnabled(true);
                         JOptionPane.showMessageDialog(null, "Se ha Cancelado su reserva con exito", "Aviso", JOptionPane.PLAIN_MESSAGE);
                     } 
                 } 
-            }else if(vista.boton5 == evento.getSource()){
-                rep = true;
-                ex = res = in = out = can = false;
-                Vista.Reportes rp = new Vista().new Reportes();
-                this.reportes = rp;
-                this.reportes.setSize(300,400);
-                this.reportes.opciones.addItemListener(this);
-                this.reportes.box1.addItemListener(this);
-                this.reportes.box2.addItemListener(this);
-                this.reportes.box3.addItemListener(this);
-                this.reportes.box4.addItemListener(this);
-                this.reportes.box5.addItemListener(this);
-                this.reportes.box6.addItemListener(this);
-                this.reportes.enviar.addActionListener(this);
-                this.reportes.cancelar.addActionListener(this);
+            }if(vista.boton5 == evento.getSource()){
                 if(dia1Rep == true && dia2Rep == true && mes1Rep == true && mes2Rep == true && anio2Rep == true && anio1Rep == true){
                     LocalDate fecha1Reportes = LocalDate.of(anio1Reporte, mes1Reporte, dia1Reporte);
                     LocalDate fecha2Reportes = LocalDate.of(anio2Reporte, mes2Reporte, dia2Reporte);
@@ -184,8 +237,10 @@ public class Controlador implements ActionListener, ItemListener{
                     fechaReportes[1] = fecha2Reportes;
                     fechaRep = true;
                 }
-                if(reportes.enviar == evento.getSource()){
-                    if(fechaRep == true){
+                if(a == true || b == true || c == true || d == true || e == true || f == true || g == true || h == true || i == true || j == true || k == true || l == true){
+                    reportes.enviar.setEnabled(true);
+                    if(reportes.enviar == evento.getSource()){
+                        if(fechaRep == true){
                             if(a == true){
                                 if(dia1Rep == true && dia2Rep == true && mes1Rep == true && mes2Rep == true && anio1Rep == true && anio2Rep == true){
                                     modelo.reservasCanceladas(fechaReportes[0], fechaReportes[1]);
@@ -238,45 +293,36 @@ public class Controlador implements ActionListener, ItemListener{
                                 JOptionPane.showMessageDialog(null, "Ingrese una opcion por favor", "ALERTA", JOptionPane.WARNING_MESSAGE);
                             }
                         } else{ JOptionPane.showMessageDialog(null, "Por favor ingrese una fecha", "ALERTA", JOptionPane.WARNING_MESSAGE);}
+                    }
                 }
-            } else if(vista.boton6 == evento.getSource()){
-                ex = true;
-                res = in = out = rep = false;
-                Vista.Exportar exp = new Vista().new Exportar();
-                this.exportar = exp;
-                this.exportar.setSize(300, 400);
-                this.exportar.reservaciones.addActionListener(this);
-                this.exportar.contabilidad.addActionListener(this);
-                this.exportar.verRes.addActionListener(this);
-                this.exportar.verCont.addActionListener(this);
-                this.exportar.verRes.setEnabled(false);
-                this.exportar.verCont.setEnabled(false);
+            } if(vista.boton6 == evento.getSource()){
+                vista.setVisible(false);
+                exportar.setVisible(true);
             } else if(exportar.reservaciones == evento.getSource()){
                 modelo.reservacionesOutCreate();
-                this.exportar.verRes.setEnabled(true);
+                exportar.verRes.setEnabled(true);
             } else if(exportar.contabilidad == evento.getSource()){
                 modelo.contabilidadOutCreate();
-                this.exportar.verCont.setEnabled(true);
+                exportar.verCont.setEnabled(true);
             } else if(exportar.verRes == evento.getSource()){
                 String textoReserva = modelo.getReservacionesOut();
                 Vista.VerReserva verReser = new Vista().new VerReserva(textoReserva);
-                this.verReserva = verReser;
-                this.verReserva.setSize(350, 450);
+                verReserva = verReser;
+                verReserva.setSize(350, 450);
             } else if(exportar.verCont == evento.getSource()){
                 String textoCont = modelo.getContabilidadString();
                 Vista.VerContabilidad verCont = new Vista().new VerContabilidad(textoCont);
-                this.verContabilidad = verCont;
-                this.verContabilidad.setSize(350,450);
+                verContabilidad = verCont;
+                verContabilidad.setSize(350,450);
             }
-        } 
+        }
     }
     public void itemStateChanged(ItemEvent evento){
         if(evento.getStateChange() == ItemEvent.SELECTED){
-            if(res == true){
-                if(evento.getSource() == this.reserva.fechin1){
+                if(evento.getSource() == reserva.fechin1){
                     dia1Reserva = (int)reserva.fechin1.getSelectedItem();
-                } else if (evento.getSource() == this.reserva.tipoHabitaciones){
-                    String tipoRaw = (String) this.reserva.tipoHabitaciones.getSelectedItem();
+                } else if (evento.getSource() == reserva.tipoHabitaciones){
+                    String tipoRaw = (String) reserva.tipoHabitaciones.getSelectedItem();
                     switch(tipoRaw){
                         case "Individual":
                         tipo = "INDIV";
@@ -299,67 +345,58 @@ public class Controlador implements ActionListener, ItemListener{
                         limit = 10;
                         break;
                     }
-                } else if (evento.getSource() == this.reserva.fechin2){
-                    mes1Reserva = (int) this.reserva.fechin2.getSelectedItem();
-                } else if (evento.getSource() == this.reserva.fechin3){
-                    anio1Reserva = (int) this.reserva.fechin3.getSelectedItem();
-                } else if (evento.getSource() == this.reserva.fechout1){
-                    dia2Reserva = (int) this.reserva.fechout1.getSelectedItem();
-                } else if (evento.getSource() == this.reserva.fechout2){
-                    mes2Reserva = (int) this.reserva.fechout2.getSelectedItem();
-                } else if (evento.getSource() == this.reserva.fechout3){
-                    anio2Reserva = (int) this.reserva.fechout3.getSelectedItem();
-                } else if(evento.getSource() == this.reserva.adultos){
-                    adultos = (int) this.reserva.adultos.getSelectedItem();
-                } else if(evento.getSource() == this.reserva.ninos){
-                    ninos = (int) this.reserva.ninos.getSelectedItem();
+                } else if (evento.getSource() == reserva.fechin2){
+                    mes1Reserva = (int) reserva.fechin2.getSelectedItem();
+                } else if (evento.getSource() == reserva.fechin3){
+                    anio1Reserva = (int) reserva.fechin3.getSelectedItem();
+                } else if (evento.getSource() == reserva.fechout1){
+                    dia2Reserva = (int) reserva.fechout1.getSelectedItem();
+                } else if (evento.getSource() == reserva.fechout2){
+                    mes2Reserva = (int) reserva.fechout2.getSelectedItem();
+                } else if (evento.getSource() == reserva.fechout3){
+                    anio2Reserva = (int) reserva.fechout3.getSelectedItem();
+                } else if(evento.getSource() == reserva.adultos){
+                    adultos = (int) reserva.adultos.getSelectedItem();
+                } else if(evento.getSource() == reserva.ninos){
+                    ninos = (int) reserva.ninos.getSelectedItem();
                 }
             }
-            if(can == true){
-
-                if (evento.getSource() == this.cancelacion.hora1){
-                    hora1Can = (int) this.cancelacion.hora1.getSelectedItem();
-                } else if (evento.getSource() == this.cancelacion.hora2){
-                    hora2Can = (int) this.cancelacion.hora2.getSelectedItem();
+                if (evento.getSource() == cancelacion.hora1){
+                    hora1Can = (int) cancelacion.hora1.getSelectedItem();
+                } else if (evento.getSource() == cancelacion.hora2){
+                    hora2Can = (int) cancelacion.hora2.getSelectedItem();
                 }
-            }
-            if(in == true){
-                if (evento.getSource() == this.checkIn.hora1){
-                    hora1Can = (int) this.checkIn.hora1.getSelectedItem();
-                } else if (evento.getSource() == this.checkIn.hora2){
-                    hora2Can = (int) this.checkIn.hora2.getSelectedItem();
+                if (evento.getSource() == checkIn.hora1){
+                    hora1Can = (int) checkIn.hora1.getSelectedItem();
+                } else if (evento.getSource() == checkIn.hora2){
+                    hora2Can = (int) checkIn.hora2.getSelectedItem();
                 }
-            }
-            if(out == true){
-                if (evento.getSource() == this.checkOut.hora1){
-                    hora1Out = (int) this.checkOut.hora1.getSelectedItem();
-                } else if (evento.getSource() == this.checkOut.hora2){
-                    hora2Out = (int) this.checkOut.hora2.getSelectedItem();
+                if (evento.getSource() == checkOut.hora1){
+                    hora1Out = (int) checkOut.hora1.getSelectedItem();
+                } else if (evento.getSource() == checkOut.hora2){
+                    hora2Out = (int) checkOut.hora2.getSelectedItem();
                 }
-            }
-            if(rep == true){
-
-                if(evento.getSource() == this.reportes.box1){
-                    dia1Reporte = (int) this.reportes.box1.getSelectedItem();
+                if(evento.getSource() == reportes.box1){
+                    dia1Reporte = (int) reportes.box1.getSelectedItem();
                     dia1Rep = true;
-                } else if(evento.getSource() == this.reportes.box2){
-                    mes1Reporte = (int) this.reportes.box2.getSelectedItem();
+                } else if(evento.getSource() == reportes.box2){
+                    mes1Reporte = (int) reportes.box2.getSelectedItem();
                     mes1Rep = true;
-                } else if(evento.getSource() == this.reportes.box3){
-                    anio1Reporte = (int) this.reportes.box3.getSelectedItem();
+                } else if(evento.getSource() == reportes.box3){
+                    anio1Reporte = (int) reportes.box3.getSelectedItem();
                     anio1Rep = true;
-                } else if(evento.getSource() == this.reportes.box4){
-                    dia2Reporte = (int) this.reportes.box4.getSelectedItem();
+                } else if(evento.getSource() == reportes.box4){
+                    dia2Reporte = (int) reportes.box4.getSelectedItem();
                     dia2Rep = true;
-                } else if(evento.getSource() == this.reportes.box5){
-                    mes2Reporte = (int) this.reportes.box5.getSelectedItem();
+                } else if(evento.getSource() == reportes.box5){
+                    mes2Reporte = (int) reportes.box5.getSelectedItem();
                     mes2Rep = true;
-                } else if(evento.getSource() == this.reportes.box6){
-                    anio2Reporte = (int) this.reportes.box6.getSelectedItem();
+                } else if(evento.getSource() == reportes.box6){
+                    anio2Reporte = (int) reportes.box6.getSelectedItem();
                     anio2Rep = true;
                 } 
-                else if(evento.getSource() == this.reportes.opciones){
-                    String opcionRaw = (String) this.reportes.opciones.getSelectedItem();
+                else if(evento.getSource() == reportes.opciones){
+                    String opcionRaw = (String) reportes.opciones.getSelectedItem();
                     switch(opcionRaw){
                         case "Numero de reservaciones canceladas":
                         a = true;
@@ -412,6 +449,4 @@ public class Controlador implements ActionListener, ItemListener{
                         }
                     }
                 }
-            }
-        }
     }
