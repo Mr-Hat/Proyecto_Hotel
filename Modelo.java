@@ -125,7 +125,7 @@ public class Modelo{
             contabilidad.put(fecha, fecha + " |" + "         |   " + 25000+ "|       " + presupuesto + "|Nomina");
         } 
     }
-    public void reserva(LocalDate fechLleg, LocalDate fechSalid, String tipo, int num, int numA, int numN, String cedula, String nombre){
+    public void reserva(LocalDate fechLleg, LocalDate fechSalid, String tipo, int num, int numA, int numN, String cedula){
             if(num >= 1 || num <= 10){
                 List<int[]> totalHabit = getHabitacion(tipo);
                 int[] habit = buscarHabitacionDisponible(totalHabit, fechLleg, fechSalid);
