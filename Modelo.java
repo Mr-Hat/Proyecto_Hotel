@@ -634,9 +634,9 @@ public class Modelo{
         try{
             File reserva = new File("Reservaciones.out");
             if(reserva.createNewFile()){
-                System.out.println("Se ha creado el archivo Reservaciones.out");
+                reservacionesOut();
             } else{
-                System.out.println("El archivo Reservaciones.out ya existe");
+                reservacionesOut();
             }
         } catch (IOException e){
             System.out.println("Ha ocurrido un error con la creacion del out de la reserva");
@@ -647,9 +647,9 @@ public class Modelo{
         try{
             File contabilidad = new File("Contabilidad.out");
             if(contabilidad.createNewFile()){
-                System.out.println("Se ha creado el archivo Contabilidad.out");
+                contabilidadOut();
             } else{
-                System.out.println("El archivo Contabilidad.out ya existe");
+                contabilidadOut();
             }
         } catch (IOException e){
             System.out.println("Ha ocurrido un error con la creacion de de Contabilidad.out");
