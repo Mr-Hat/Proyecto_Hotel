@@ -51,13 +51,13 @@ public class Vista extends JFrame{
         public JTextArea datos;
         public JButton volver;
         public JScrollPane scroll;
-        public VerReserva(String texto){
+        public VerReserva(){
             super("Datos Reserva");
             panel = getContentPane();
             panel.setLayout(new FlowLayout());
             p1 = new JPanel();
             p1.setLayout(new FlowLayout(FlowLayout.LEFT));
-            datos = new JTextArea(texto);
+            datos = new JTextArea();
             volver = new JButton("Volver");
             scroll = new JScrollPane(datos);
             scroll.setBounds(10, 50, 300, 400);
@@ -70,16 +70,16 @@ public class Vista extends JFrame{
     public class VerContabilidad extends JFrame{
         private Container panel;
         private JPanel p1;
-        private JTextArea datos;
+        public JTextArea datos;
         private JScrollPane scroll;
         public JButton volver;
-        public VerContabilidad(String texto){
+        public VerContabilidad(){
             super("Datos Contabilidad");
             panel = getContentPane();
             panel.setLayout(new FlowLayout());
             p1 = new JPanel();
             p1.setLayout(new FlowLayout(FlowLayout.LEFT));
-            datos = new JTextArea(texto);
+            datos = new JTextArea();
             scroll = new JScrollPane(datos);
             scroll.setBounds(10, 50, 400, 300);
             volver = new JButton("Volver");
