@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class Vista extends JFrame{
     private JPanel p1;
-    public JButton boton1,boton2,boton3,boton4,boton5;
+    public JButton boton1,boton2,boton3,boton4,boton5,boton6;
     public Vista(){
         super("Menu Hotel");
         p1 = new JPanel();
@@ -13,12 +13,73 @@ public class Vista extends JFrame{
         boton3 = new JButton("Check-out");
         boton4 = new JButton("Cancelacion");
         boton5 = new JButton("Reportes");
+        boton6 = new JButton("Exportar Datos");
         p1.add(boton1);
         p1.add(boton2);
         p1.add(boton3);
         p1.add(boton4);
         p1.add(boton5);
+        p1.add(boton6);
         add(p1);
+    }
+    public class Exportar extends JFrame{
+        private Container panel;
+        private JPanel p1;
+        public JButton reservaciones, contabilidad, verRes, verCont;
+        public Exportar(){
+            super("Exportar Datos");
+            panel = getContentPane();
+            panel.setLayout(new GridLayout(2, 2));
+            p1 = new JPanel();
+            p1.setLayout(new FlowLayout(FlowLayout.LEFT));
+            reservaciones = new JButton("Exportar Reservaciones");
+            contabilidad = new JButton("Exportar Contabilidad");
+            verRes = new JButton("Ver Reservaciones");
+            verCont = new JButton("Ver Contabilidad");
+            p1.add(reservaciones);
+            p1.add(contabilidad);
+            p1.add(verRes);
+            p1.add(verCont);
+            add(p1);
+        }
+    }
+    public class VerReserva extends JFrame{
+        private Container panel;
+        private JPanel p1;
+        public JTextArea datos;
+        private JScrollPane scroll;
+        public VerReserva(String texto){
+            super("Datos Reserva");
+            panel = getContentPane();
+            panel.setLayout(new FlowLayout());
+            p1 = new JPanel();
+            p1.setLayout(new FlowLayout(FlowLayout.LEFT));
+            datos = new JTextArea(texto);
+            scroll = new JScrollPane(datos);
+            scroll.setBounds(10, 50, 300, 400);
+            p1.add(datos);
+            p1.add(scroll);
+            add(p1);
+        }
+    }
+    public class VerContabilidad extends JFrame{
+        private Container panel;
+        private JPanel p1;
+        public JTextArea datos;
+        private JScrollPane scroll;
+        public VerContabilidad(String texto){
+            super("Datos Contabilidad");
+            panel = getContentPane();
+            panel.setLayout(new FlowLayout());
+            p1 = new JPanel();
+            p1.setLayout(new FlowLayout(FlowLayout.LEFT));
+            datos = new JTextArea(texto);
+            scroll = new JScrollPane(datos);
+            scroll.setBounds(10, 50, 400, 300);
+            p1.add(scroll);
+            p1.add(datos);
+            add(p1);
+        }
     }
     public class Reportes extends JFrame{
         private Container panel;
